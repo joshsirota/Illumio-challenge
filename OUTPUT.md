@@ -1,0 +1,43 @@
+josh@greeble Illumio % ./urls.erl 474554202f636f6d70616e793f747970653d636f6d70616e7920485454502f312e310d0a486f73743a207777772e696c6c756d696f2e636f6d0d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+GET /company?type=company HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % ./urls.erl 474554202f626c6f6720485454502f312e310d0a486f73743a207777772e696c6c756d696f2e636f6d0d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+GET /blog HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % ./urls.erl 474554202f20485454502f312e310d0a486f73743a207777772e77696b6970656469612e6f72670d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+Changing "www.wikipedia.org", "/" to Illumio
+
+GET / HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % ./urls.erl 474554202f646f632f6d616e2f62696e6172792e68746d6c20485454502f312e310d0a486f73743a207777772e65726c616e672e6f72670d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+Changing "www.erlang.org", "/doc/man/binary.html" to Illumio
+
+GET / HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % ./urls.erl 474554202f696e6465782e68746d6c20485454502f312e310d0a486f73743a206578616d706c652e636f6d0d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+Changing "example.com", "/index.html" to Illumio
+
+GET / HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % ./urls.erl 474554202f20485454502f312e310d0a486f73743a207777772e696c6c756d696f2e636f6d0d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
+GET / HTTP/1.1
+Accept: */*
+Host: www.illumio.com
+User-Agent: curl/7.81.0
+
+josh@greeble Illumio % 
