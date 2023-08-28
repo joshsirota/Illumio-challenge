@@ -14,9 +14,11 @@ main(Args) ->
     % reconstruct the output
     NewHeaders = Headers#{"Host" => NewHost},
 
-    io:format("~s ~s ~s~n", [Method, NewPath, Version]),
-    maps:foreach(fun(K, V) -> io:format("~s: ~s~n", [K, V]) end, NewHeaders),
-    io:fwrite("~n").
+    Result = io_lib:format("~s ~s ~s~n", [Method, NewPath, Version]) ++
+        lists:flatten(maps:values(maps:map(fun(K, V) -> io_lib:format("~s: ~s~n", [K, V]) end, NewHeaders))) ++
+        io_lib:format("~n", []),
+
+    io:format("~s~n", [toHex(lists:flatten(Result))]).
 
 getHeaders(Lines) ->
     maps:from_list(lists:map(fun(X) -> list_to_tuple(string:lexemes(X, ": ")) end, Lines)).
@@ -30,9 +32,18 @@ rewriteRequest(Host, Path) ->
     end.
 
 %
-% Utility to convert original hex string to usable input. Cribbed from StackOverflow.
+% Utilities to convert hex string to chars and vice-versa. Cribbed from StackOverflow.
 % 
-hex2s(HStr) -> hex2s(HStr,[]).
+hex2s(HStr) -> hex2s(HStr, []).
 
 hex2s([X1,X2|Rest], Acc) ->  hex2s(Rest, [ list_to_integer([X1,X2], 16) |Acc ]);
 hex2s([], Acc)           -> lists:reverse(Acc).
+
+hexChar(Num) when Num < 10 andalso Num >= 0->
+    $0 + Num;
+hexChar(Num) when Num < 16 ->
+    $a + Num - 10.
+
+toHex([Byte | Rest]) ->
+    [hexChar(Byte div 16), hexChar(Byte rem 16)] ++ toHex(Rest);
+toHex([]) -> [].

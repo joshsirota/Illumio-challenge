@@ -9,13 +9,12 @@ I'm also not claiming that this will work for all RFC-valid inputs. I wouldn't b
 ## Assumptions
 1. This only NEEDS to work on the provided input, not necessarily any example of valid HTTP.
 2. Any reviewer will already have erlang and escript installed locally in order to run this (though my local output is present in `OUTPUT.md`)
-3. It's okay to output the modified HTTP request in human-readable form rather than convert it back to hex. The prompt implies that there's an expectation of hex when explaining the one example, but I'm assuming that in reality the hex input is there to make sure that the user understands that the input is not just hostname strings but rather an full HTTP request.
-4. It's okay to handle the happy-path here and "let it fail" as I keep reading about erlang. There is no error handling here at all!
+3. It's okay to handle the happy-path here and "let it fail" as I keep reading about erlang. There is no error handling here at all!
 
 Obviously if any of these assumptions are wrong, please let me know ASAP so I can correct them!
 
 ## How-To
-To run this, simply make the program `urls.erl` executable and run it on the command-line, passing the original hex string as a parameter. I cribbed the hex-to-string code from Stack Overflow, though all of the rest of it I wrote from scratch. 
+To run this, simply make the program `urls.erl` executable and run it on the command-line, passing the original hex string as a parameter. I cribbed the hex-to-string (and vice-versa) code from Stack Overflow, though all of the rest of it I wrote from scratch. 
 
 I used `escript` as a shortcut for a command-line tool. I'm assuming that you all will have this and the rest of the erlang toolset installed locally.
 
