@@ -23,3 +23,5 @@ For example, run
 ./urls.erl 474554202f20485454502f312e310d0a486f73743a207777772e696c6c756d696f2e636f6d0d0a557365722d4167656e743a206375726c2f372e38312e300d0a4163636570743a202a2f2a0d0a0d0a
 ```
 
+## Next Steps
+I've just discovered `erlang:decode_packet/3`, which knows how to parse http requests and therefore seems to be a way better way to parse the original request.
