@@ -2,26 +2,60 @@
 
 main(Args) ->
     RawInput = hd(Args),
+    NewRequest = rewriteHexHttpRequest(RawInput),
+
+    io:format("Final Result:~n~s~n", [NewRequest]).
+
+%
+% Main function of challenge.
+% 
+% Accepts a hex string containing an HTTP request. Updates it, and returns the resulting hex string.
+%
+rewriteHexHttpRequest(RawInput) ->
     Input = hex2s(RawInput),
-    Lines = string:lexemes(Input, [[$\r,$\n]]),
 
-    {Method, Path, Version} = list_to_tuple(string:lexemes(hd(Lines), " ")),
-    Headers = getHeaders(lists:nthtail(1, Lines)),
+    % Write the original request in ascii text
+    io:format("ORIGINAL REQUEST:~n~s~n", [Input]),
 
-    {_, Host} = maps:find("Host", Headers),
+    % Use the Erlang HTTP parser to parse the original request
+    MethodLine = erlang:decode_packet(http, list_to_binary(Input), []),
+
+    % Extract the info we need from the request. I really only need the Path and Headers now, but I'll
+    % need the rest to rewrite the full request
+    {ok, {http_request, Method, {abs_path, Path}, {VersionMajor, VersionMinor}}, Headers} = MethodLine,
+    HeaderMap = parseHeaders(Headers),
+    {ok, Host} = maps:find("Host", HeaderMap),
+
+    % We have the host extracted from the headers, and the path extracted from the method line
+    io:format("Host: ~s~nPath: ~s~n", [Host, Path]),
+
+    % Compute a potentially-changed new host and path
     {NewHost, NewPath} = rewriteRequest(Host, Path), 
 
-    % reconstruct the output
-    NewHeaders = Headers#{"Host" => NewHost},
+    % Rewrite the host into the header map
+    NewHeaderMap = HeaderMap#{"Host" => NewHost},
 
-    Result = io_lib:format("~s ~s ~s~n", [Method, NewPath, Version]) ++
-        lists:flatten(maps:values(maps:map(fun(K, V) -> io_lib:format("~s: ~s~n", [K, V]) end, NewHeaders))) ++
-        io_lib:format("~n", []),
+    % Reconstruct the output
+    % [ Note to self: is there a way to compute an HTTP request and then just output that? ]
+    Result = lists:flatten(io_lib:format("~s ~s HTTP/~B.~B~n", [atom_to_list(Method), NewPath, VersionMajor, VersionMinor]) ++
+        lists:flatten(maps:values(maps:map(fun(K, V) -> io_lib:format("~s: ~s~n", [K, V]) end, NewHeaderMap))) ++
+        io_lib:format("~n", [])),
 
-    io:format("~s~n", [toHex(lists:flatten(Result))]).
+    % Write the new request in ascii text
+    io:format("UPDATED REQUEST:~n~s~n", [Result]),
 
-getHeaders(Lines) ->
-    maps:from_list(lists:map(fun(X) -> list_to_tuple(string:lexemes(X, ": ")) end, Lines)).
+    % Return the hex result
+    toHex(Result).
+
+parseHeaders(Headers) ->
+    parseHeaders(Headers, #{}).
+
+parseHeaders(Headers, HeaderMap) ->
+    HeaderResult = erlang:decode_packet(httph, Headers, []),
+    case HeaderResult of
+        {ok, http_eoh, _} -> HeaderMap;
+        {ok, {http_header, _, _, Header, Value}, Rest} -> parseHeaders(Rest, HeaderMap#{Header => Value})
+    end.
 
 rewriteRequest(Host, Path) ->
     case {Host, Path} of
